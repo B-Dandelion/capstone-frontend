@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:capstone_frontend/apps/courier/screens/create_delivery_screen.dart';
+import 'package:capstone_frontend/apps/courier/screens/robot_connect_screen.dart';
 import 'package:capstone_frontend/core/models/delivery_status.dart';
 import 'package:capstone_frontend/core/theme/app_colors.dart';
 import 'package:capstone_frontend/core/theme/app_radius.dart';
@@ -102,7 +103,13 @@ class CourierDashboardScreen extends StatelessWidget {
                       Row(
                         children: [
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => const RobotConnectScreen(),
+                                ),
+                              );
+                            },
                             child: const Text('연결 변경'),
                           ),
                           const SizedBox(width: AppSpacing.md),

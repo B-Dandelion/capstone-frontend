@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:capstone_frontend/apps/resident/screens/arrived_screen.dart';
 import 'package:capstone_frontend/core/models/delivery_status.dart';
 import 'package:capstone_frontend/core/theme/app_colors.dart';
 import 'package:capstone_frontend/core/theme/app_spacing.dart';
@@ -51,7 +50,7 @@ class TrackingScreen extends StatelessWidget {
           NavigationDestination(icon: Icon(Icons.receipt_long_outlined), label: '내역'),
           NavigationDestination(icon: Icon(Icons.person_outline), label: '내 정보'),
         ],
-        onDestinationSelected: (_) {},
+        onDestinationSelected: (index) => _onNavTap(context, index),
       ),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.xxl),
@@ -96,15 +95,24 @@ class TrackingScreen extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xl),
           FilledButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ArrivedScreen()),
-              );
-            },
+            onPressed: () => Navigator.of(context).pushNamed('/arrived'),
             child: const Text('완료 화면 미리보기'),
           ),
         ],
       ),
     );
+  }
+
+  void _onNavTap(BuildContext context, int index) {
+    if (index == 1) return;
+
+    final route = switch (index) {
+      0 => '/',
+      2 => '/history',
+      3 => '/profile',
+      _ => '/',
+    };
+
+    Navigator.of(context).pushReplacementNamed(route);
   }
 }

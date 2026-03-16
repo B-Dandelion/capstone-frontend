@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:capstone_frontend/apps/resident/screens/tracking_screen.dart';
 import 'package:capstone_frontend/core/models/delivery_status.dart';
 import 'package:capstone_frontend/core/theme/app_spacing.dart';
 import 'package:capstone_frontend/core/theme/app_text_styles.dart';
@@ -21,13 +20,7 @@ class HomeScreen extends StatelessWidget {
           NavigationDestination(icon: Icon(Icons.receipt_long_outlined), label: '내역'),
           NavigationDestination(icon: Icon(Icons.person_outline), label: '내 정보'),
         ],
-        onDestinationSelected: (index) {
-          if (index == 1) {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const TrackingScreen()),
-            );
-          }
-        },
+        onDestinationSelected: (index) => _onNavTap(context, index),
       ),
       body: SafeArea(
         child: ListView(
@@ -55,11 +48,7 @@ class HomeScreen extends StatelessWidget {
               title: '오늘 도착 예정 택배 1건',
               status: '로봇이 이동 중입니다',
               eta: '예상 도착 1분 18초',
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const TrackingScreen()),
-                );
-              },
+              onTap: () => Navigator.of(context).pushNamed('/tracking'),
             ),
             const SizedBox(height: AppSpacing.xl),
             InfoCard(
@@ -90,5 +79,18 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _onNavTap(BuildContext context, int index) {
+    if (index == 0) return;
+
+    final route = switch (index) {
+      1 => '/tracking',
+      2 => '/history',
+      3 => '/profile',
+      _ => '/',
+    };
+
+    Navigator.of(context).pushReplacementNamed(route);
   }
 }

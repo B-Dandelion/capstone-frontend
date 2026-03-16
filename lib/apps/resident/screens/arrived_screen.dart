@@ -57,7 +57,9 @@ class ArrivedScreen extends StatelessWidget {
               const Spacer(),
               PrimaryCtaButton(
                 label: '확인',
-                onPressed: null,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
               const SizedBox(height: AppSpacing.md),
               SizedBox(
@@ -65,7 +67,7 @@ class ArrivedScreen extends StatelessWidget {
                 height: 56,
                 child: OutlinedButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacementNamed('/history');
                   },
                   child: const Text('배송 내역 보기'),
                 ),

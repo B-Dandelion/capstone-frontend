@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:capstone_frontend/apps/courier/screens/live_mission_screen.dart';
+import 'package:capstone_frontend/apps/courier/screens/prelaunch_check_screen.dart';
 import 'package:capstone_frontend/core/theme/app_spacing.dart';
 import 'package:capstone_frontend/core/theme/app_text_styles.dart';
 import 'package:capstone_frontend/core/widgets/app_text_field.dart';
@@ -142,9 +142,20 @@ class _CreateDeliveryScreenState extends State<CreateDeliveryScreen> {
               label: '다음',
               icon: Icons.arrow_forward,
               onPressed: () {
+                if (unitController.text.trim().isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('호수를 입력하세요.')),
+                  );
+                  return;
+                }
+
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => const LiveMissionScreen(),
+                    builder: (_) => PreLaunchCheckScreen(
+                      building: selectedBuilding,
+                      unit: unitController.text.trim(),
+                      quantity: quantity,
+                    ),
                   ),
                 );
               },
