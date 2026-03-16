@@ -1,0 +1,110 @@
+import 'package:flutter/material.dart';
+import 'package:capstone_frontend/apps/resident/screens/arrived_screen.dart';
+import 'package:capstone_frontend/core/models/delivery_status.dart';
+import 'package:capstone_frontend/core/theme/app_colors.dart';
+import 'package:capstone_frontend/core/theme/app_spacing.dart';
+import 'package:capstone_frontend/core/theme/app_text_styles.dart';
+import 'package:capstone_frontend/core/widgets/info_card.dart';
+import 'package:capstone_frontend/core/widgets/progress_timeline.dart';
+import 'package:capstone_frontend/core/widgets/status_chip.dart';
+
+class TrackingScreen extends StatelessWidget {
+  const TrackingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final steps = [
+      const TimelineStepData(
+        title: '접수됨',
+        state: TimelineStepState.done,
+      ),
+      const TimelineStepData(
+        title: '로봇 적재 완료',
+        state: TimelineStepState.done,
+      ),
+      const TimelineStepData(
+        title: '건물 진입',
+        state: TimelineStepState.done,
+      ),
+      const TimelineStepData(
+        title: '층 이동 중',
+        subtitle: '14층으로 이동 중',
+        state: TimelineStepState.current,
+      ),
+      const TimelineStepData(
+        title: '문 앞 도착',
+        state: TimelineStepState.future,
+      ),
+      const TimelineStepData(
+        title: '배송 완료',
+        state: TimelineStepState.future,
+      ),
+    ];
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('배송 현황')),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: 1,
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home_outlined), label: '홈'),
+          NavigationDestination(icon: Icon(Icons.local_shipping_outlined), label: '배송현황'),
+          NavigationDestination(icon: Icon(Icons.receipt_long_outlined), label: '내역'),
+          NavigationDestination(icon: Icon(Icons.person_outline), label: '내 정보'),
+        ],
+        onDestinationSelected: (_) {},
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(AppSpacing.xxl),
+        children: [
+          const Text('현재 문 앞 배송이 진행 중입니다', style: AppTextStyles.body),
+          const SizedBox(height: AppSpacing.xl),
+          InfoCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Row(
+                  children: [
+                    StatusChip(
+                      status: DeliveryStatus.movingToFloor,
+                      customLabel: '이동 중',
+                    ),
+                    Spacer(),
+                    Text('ETA 01:18', style: AppTextStyles.sub),
+                  ],
+                ),
+                SizedBox(height: AppSpacing.lg),
+                Text('101동 1203호', style: AppTextStyles.sectionTitle),
+                SizedBox(height: AppSpacing.sm),
+                Text('예상 도착 01:18', style: AppTextStyles.body),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          InfoCard(
+            child: ProgressTimeline(
+              steps: steps,
+              compact: true,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          const InfoCard(
+            backgroundColor: AppColors.mintSoft,
+            child: Text(
+              '로봇이 문 앞에 도착하면 바로 알려드릴게요.',
+              style: AppTextStyles.body,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ArrivedScreen()),
+              );
+            },
+            child: const Text('완료 화면 미리보기'),
+          ),
+        ],
+      ),
+    );
+  }
+}
