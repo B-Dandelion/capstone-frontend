@@ -144,6 +144,22 @@ class LiveMissionScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: AppSpacing.xl),
+                const InfoCard(
+                  backgroundColor: Color(0xFFFFF1F1),
+                  child: Row(
+                    children: [
+                      Icon(Icons.warning_amber_rounded, color: AppColors.error),
+                      SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Text(
+                          '보안 상태: 강제 개방 시도 감지',
+                          style: AppTextStyles.body,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

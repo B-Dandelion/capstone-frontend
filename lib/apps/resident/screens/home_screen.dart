@@ -5,6 +5,8 @@ import 'package:capstone_frontend/core/theme/app_text_styles.dart';
 import 'package:capstone_frontend/core/widgets/hero_status_card.dart';
 import 'package:capstone_frontend/core/widgets/info_card.dart';
 import 'package:capstone_frontend/core/widgets/status_chip.dart';
+import 'package:capstone_frontend/core/models/security_alert.dart';
+import 'package:capstone_frontend/core/widgets/security_status_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -51,7 +53,7 @@ class HomeScreen extends StatelessWidget {
               onTap: () => Navigator.of(context).pushNamed('/tracking'),
             ),
             const SizedBox(height: AppSpacing.xl),
-            InfoCard(
+            const InfoCard(
               child: Row(
                 children: const [
                   Expanded(
@@ -63,6 +65,16 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            SecurityStatusCard(
+              level: SecurityAlertLevel.warning,
+              title: '보안 경고 발생',
+              subtitle: '강제 개방 시도가 감지되었습니다. 보안 이벤트 상세를 확인해주세요.',
+              buttonLabel: '자세히 보기',
+              onTap: () {
+                Navigator.of(context).pushNamed('/security-alert');
+              },
             ),
             const SizedBox(height: AppSpacing.lg),
             const InfoCard(
