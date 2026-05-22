@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:capstone_frontend/apps/courier/screens/create_delivery_screen.dart';
+import 'package:capstone_frontend/apps/courier/screens/pickup_manage_screen.dart';
 import 'package:capstone_frontend/apps/courier/screens/robot_connect_screen.dart';
 import 'package:capstone_frontend/apps/courier/screens/scout_wifi_test_screen.dart';
 import 'package:capstone_frontend/core/models/delivery_status.dart';
@@ -22,7 +22,7 @@ class CourierDashboardScreen extends StatelessWidget {
         children: [
           Container(
             decoration: const BoxDecoration(
-              color: AppColors.deepGreen,
+              color: AppColors.primary,
               borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(AppRadius.xl),
               ),
@@ -116,12 +116,12 @@ class CourierDashboardScreen extends StatelessWidget {
                           const SizedBox(width: AppSpacing.md),
                           Expanded(
                             child: PrimaryCtaButton(
-                              label: '새 배송 작업 등록',
+                              label: '로봇 선택 및 운영 시작',
                               icon: Icons.arrow_forward,
                               onPressed: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (_) => const CreateDeliveryScreen(),
+                                    builder: (_) => const RobotConnectScreen(),
                                   ),
                                 );
                               },
@@ -133,50 +133,46 @@ class CourierDashboardScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
-                InfoCard(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceMuted,
-                          borderRadius: BorderRadius.circular(AppRadius.md),
-                        ),
-                        child: const Icon(
-                          Icons.wifi,
-                          color: AppColors.deepGreen,
-                        ),
+
+                _QuickEntryCard(
+                  icon: Icons.precision_manufacturing_outlined,
+                  title: '로봇 연결 및 적재 관리',
+                  subtitle: '로봇을 선택한 뒤 해당 로봇의 스캔/적재 현황을 관리합니다.',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const RobotConnectScreen(),
                       ),
-                      const SizedBox(width: AppSpacing.lg),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Scout Mini 통신 테스트', style: AppTextStyles.body),
-                            SizedBox(height: 4),
-                            Text(
-                              '운영 앱과 장비 간 명령 송수신을 확인합니다.',
-                              style: AppTextStyles.sub,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const ScoutWifiTestScreen(),
-                            ),
-                          );
-                        },
-                        child: const Text('열기'),
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
+                const SizedBox(height: AppSpacing.md),
+                _QuickEntryCard(
+                  icon: Icons.shopping_bag_outlined,
+                  title: '프레시백 수거 관리',
+                  subtitle: '수거 요청, 회수 실패, 누적 미회수 현황을 확인합니다.',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const PickupManageScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: AppSpacing.md),
+                _QuickEntryCard(
+                  icon: Icons.wifi,
+                  title: 'Scout Mini 통신 테스트',
+                  subtitle: '운영 앱과 장비 간 명령 송수신을 확인합니다.',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const ScoutWifiTestScreen(),
+                      ),
+                    );
+                  },
+                ),
+
                 const SizedBox(height: AppSpacing.xl),
                 const Text('운영 요약', style: AppTextStyles.sectionTitle),
                 const SizedBox(height: AppSpacing.lg),
@@ -190,49 +186,62 @@ class CourierDashboardScreen extends StatelessWidget {
                   children: const [
                     StatMiniCard(label: '등록 작업', value: '12'),
                     StatMiniCard(label: '진행 중 배송', value: '2'),
-                    StatMiniCard(label: '완료 배송', value: '10'),
-                    StatMiniCard(label: '평균 처리 시간', value: '2m 18s'),
+                    StatMiniCard(label: '수거 요청', value: '6'),
+                    StatMiniCard(label: '회수 실패', value: '1'),
                   ],
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-                const Text('최근 작업', style: AppTextStyles.sectionTitle),
-                const SizedBox(height: AppSpacing.lg),
-                ...List.generate(
-                  3,
-                      (index) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                    child: InfoCard(
-                      padding: const EdgeInsets.all(AppSpacing.lg),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: AppColors.surfaceMuted,
-                              borderRadius: BorderRadius.circular(AppRadius.md),
-                            ),
-                            child: const Icon(Icons.inventory_2_outlined),
-                          ),
-                          const SizedBox(width: AppSpacing.lg),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text('101동 1203호', style: AppTextStyles.body),
-                                SizedBox(height: 4),
-                                Text('완료 · 14:12', style: AppTextStyles.sub),
-                              ],
-                            ),
-                          ),
-                          const StatusChip(status: DeliveryStatus.completed),
-                        ],
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickEntryCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _QuickEntryCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InfoCard(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Row(
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: AppColors.surfaceMuted,
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+            child: Icon(icon, color: AppColors.primary),
+          ),
+          const SizedBox(width: AppSpacing.lg),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: AppTextStyles.body),
+                const SizedBox(height: 4),
+                Text(subtitle, style: AppTextStyles.sub),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          OutlinedButton(
+            onPressed: onTap,
+            child: const Text('열기'),
           ),
         ],
       ),

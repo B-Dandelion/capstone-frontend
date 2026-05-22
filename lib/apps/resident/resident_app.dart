@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:capstone_frontend/apps/resident/screens/arrived_screen.dart';
+import 'package:capstone_frontend/apps/resident/screens/freshbag_request_screen.dart';
 import 'package:capstone_frontend/apps/resident/screens/history_screen.dart';
 import 'package:capstone_frontend/apps/resident/screens/home_screen.dart';
 import 'package:capstone_frontend/apps/resident/screens/profile_screen.dart';
@@ -21,6 +22,7 @@ class ResidentApp extends StatelessWidget {
         '/history': (_) => const HistoryScreen(),
         '/profile': (_) => const ProfileScreen(),
         '/arrived': (_) => const ArrivedScreen(),
+        '/freshbag-request': (_) => const FreshbagRequestScreen(),
       },
     );
   }

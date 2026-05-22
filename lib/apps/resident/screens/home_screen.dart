@@ -5,6 +5,9 @@ import 'package:capstone_frontend/core/theme/app_text_styles.dart';
 import 'package:capstone_frontend/core/widgets/hero_status_card.dart';
 import 'package:capstone_frontend/core/widgets/info_card.dart';
 import 'package:capstone_frontend/core/widgets/status_chip.dart';
+import 'package:capstone_frontend/core/theme/app_colors.dart';
+import 'package:capstone_frontend/core/theme/app_radius.dart';
+
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -72,6 +75,46 @@ class HomeScreen extends StatelessWidget {
                   Text('최근 배송', style: AppTextStyles.sectionTitle),
                   SizedBox(height: AppSpacing.md),
                   Text('어제 19:10 배송 완료', style: AppTextStyles.body),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            InfoCard(
+              child: Row(
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryLight,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                    ),
+                    child: const Icon(
+                      Icons.shopping_bag_outlined,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.lg),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('프레시백 수거 요청', style: AppTextStyles.body),
+                        SizedBox(height: 4),
+                        Text(
+                          '문 앞에 배치한 프레시백 회수를 요청합니다.',
+                          style: AppTextStyles.sub,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/freshbag-request');
+                    },
+                    child: const Text('열기'),
+                  ),
                 ],
               ),
             ),
