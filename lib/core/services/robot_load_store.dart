@@ -105,6 +105,25 @@ class RobotLoadStore {
     itemsByRobot.value = current;
   }
 
+  void removeFirstMatching({
+    required String robotId,
+    required String building,
+    required String unit,
+  }) {
+    final current = Map<String, List<LoadBoardItem>>.from(itemsByRobot.value);
+    final list = List<LoadBoardItem>.from(current[robotId] ?? const []);
+
+    final index = list.indexWhere(
+          (item) => item.building == building && item.unit == unit,
+    );
+
+    if (index != -1) {
+      list.removeAt(index);
+      current[robotId] = list;
+      itemsByRobot.value = current;
+    }
+  }
+
   String _resolveZone(String unit) {
     final text = unit.trim();
     if (text.isEmpty) return '1구역';

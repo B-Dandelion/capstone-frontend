@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:capstone_frontend/core/models/freshbag_request_item.dart';
+import 'package:capstone_frontend/core/services/freshbag_request_store.dart';
 import 'package:capstone_frontend/core/theme/app_colors.dart';
 import 'package:capstone_frontend/core/theme/app_radius.dart';
 import 'package:capstone_frontend/core/theme/app_spacing.dart';
@@ -40,34 +42,16 @@ class _PickupRequestTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = const [
-      _PickupRowData(
-        address: '101동 1203호',
-        detail: '수거 요청 · 14:10',
-        badgeLabel: '요청',
-        badgeColor: AppColors.primaryLight,
-        badgeTextColor: AppColors.primary,
-      ),
-      _PickupRowData(
-        address: '102동 804호',
-        detail: '수거 요청 · 14:22',
-        badgeLabel: '요청',
-        badgeColor: AppColors.primaryLight,
-        badgeTextColor: AppColors.primary,
-      ),
-      _PickupRowData(
-        address: '105동 1104호',
-        detail: '수거 요청 · 14:35',
-        badgeLabel: '대기',
-        badgeColor: AppColors.surfaceMuted,
-        badgeTextColor: AppColors.textMain,
-      ),
-    ];
-
-    return _PickupList(
-      emptyText: '현재 수거 요청이 없습니다.',
-      items: items,
-      icon: Icons.shopping_bag_outlined,
+    return ValueListenableBuilder<List<FreshbagRequestItem>>(
+      valueListenable: FreshbagRequestStore.instance.items,
+      builder: (context, _, __) {
+        final items = FreshbagRequestStore.instance.getRequested();
+        return _PickupList(
+          emptyText: '현재 수거 요청이 없습니다.',
+          items: items,
+          mode: _PickupListMode.requested,
+        );
+      },
     );
   }
 }
@@ -77,27 +61,16 @@ class _PickupFailedTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = const [
-      _PickupRowData(
-        address: '101동 1502호',
-        detail: '문 앞 미배출 · 실패 1회',
-        badgeLabel: '실패',
-        badgeColor: Color(0xFFFFE8E8),
-        badgeTextColor: AppColors.error,
-      ),
-      _PickupRowData(
-        address: '103동 903호',
-        detail: '문 앞 미배출 · 실패 2회',
-        badgeLabel: '경고',
-        badgeColor: Color(0xFFFFE8E8),
-        badgeTextColor: AppColors.error,
-      ),
-    ];
-
-    return _PickupList(
-      emptyText: '현재 회수 실패 항목이 없습니다.',
-      items: items,
-      icon: Icons.error_outline,
+    return ValueListenableBuilder<List<FreshbagRequestItem>>(
+      valueListenable: FreshbagRequestStore.instance.items,
+      builder: (context, _, __) {
+        final items = FreshbagRequestStore.instance.getFailed();
+        return _PickupList(
+          emptyText: '현재 회수 실패 항목이 없습니다.',
+          items: items,
+          mode: _PickupListMode.failed,
+        );
+      },
     );
   }
 }
@@ -107,40 +80,31 @@ class _PickupMissedTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = const [
-      _PickupRowData(
-        address: '101동 1502호',
-        detail: '3일째 미회수',
-        badgeLabel: '3일',
-        badgeColor: Color(0xFFFFF2D9),
-        badgeTextColor: AppColors.warning,
-      ),
-      _PickupRowData(
-        address: '105동 1104호',
-        detail: '2일째 미회수',
-        badgeLabel: '2일',
-        badgeColor: Color(0xFFFFF2D9),
-        badgeTextColor: AppColors.warning,
-      ),
-    ];
-
-    return _PickupList(
-      emptyText: '현재 누적 미회수 항목이 없습니다.',
-      items: items,
-      icon: Icons.schedule_outlined,
+    return ValueListenableBuilder<List<FreshbagRequestItem>>(
+      valueListenable: FreshbagRequestStore.instance.items,
+      builder: (context, _, __) {
+        final items = FreshbagRequestStore.instance.getMissed();
+        return _PickupList(
+          emptyText: '현재 누적 미회수 항목이 없습니다.',
+          items: items,
+          mode: _PickupListMode.missed,
+        );
+      },
     );
   }
 }
 
+enum _PickupListMode { requested, failed, missed }
+
 class _PickupList extends StatelessWidget {
-  final List<_PickupRowData> items;
+  final List<FreshbagRequestItem> items;
   final String emptyText;
-  final IconData icon;
+  final _PickupListMode mode;
 
   const _PickupList({
     required this.items,
     required this.emptyText,
-    required this.icon,
+    required this.mode,
   });
 
   @override
@@ -165,68 +129,128 @@ class _PickupList extends StatelessWidget {
       separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
       itemBuilder: (context, index) {
         final item = items[index];
+        final badge = _badgeOf(item);
 
         return InfoCard(
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryLight,
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                ),
-                child: Icon(
-                  icon,
-                  color: AppColors.primary,
-                ),
+              Row(
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryLight,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                    ),
+                    child: const Icon(
+                      Icons.shopping_bag_outlined,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.lg),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.addressLabel, style: AppTextStyles.body),
+                        const SizedBox(height: 4),
+                        Text(_detailText(item), style: AppTextStyles.sub),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: badge.bg,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                    ),
+                    child: Text(
+                      badge.label,
+                      style: AppTextStyles.sub.copyWith(
+                        color: badge.fg,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: AppSpacing.lg),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              if (mode == _PickupListMode.requested) ...[
+                const SizedBox(height: AppSpacing.lg),
+                Row(
                   children: [
-                    Text(item.address, style: AppTextStyles.body),
-                    const SizedBox(height: 4),
-                    Text(item.detail, style: AppTextStyles.sub),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          FreshbagRequestStore.instance.markFailed(item.id);
+                        },
+                        child: const Text('회수 실패'),
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: () {
+                          FreshbagRequestStore.instance.markCompleted(item.id);
+                        },
+                        child: const Text('수거 완료'),
+                      ),
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: item.badgeColor,
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                ),
-                child: Text(
-                  item.badgeLabel,
-                  style: AppTextStyles.sub.copyWith(
-                    color: item.badgeTextColor,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
+              ],
             ],
           ),
         );
       },
     );
   }
+
+  String _detailText(FreshbagRequestItem item) {
+    switch (mode) {
+      case _PickupListMode.requested:
+        return '수거 요청 대기';
+      case _PickupListMode.failed:
+        return '문 앞 미배출 · 실패 ${item.failedCount}회';
+      case _PickupListMode.missed:
+        return '${item.missedDays}일째 미회수';
+    }
+  }
+
+  _BadgeData _badgeOf(FreshbagRequestItem item) {
+    switch (mode) {
+      case _PickupListMode.requested:
+        return const _BadgeData(
+          label: '요청',
+          bg: AppColors.primaryLight,
+          fg: AppColors.primary,
+        );
+      case _PickupListMode.failed:
+        return const _BadgeData(
+          label: '실패',
+          bg: Color(0xFFFFE8E8),
+          fg: AppColors.error,
+        );
+      case _PickupListMode.missed:
+        return _BadgeData(
+          label: '${item.missedDays}일',
+          bg: const Color(0xFFFFF2D9),
+          fg: AppColors.warning,
+        );
+    }
+  }
 }
 
-class _PickupRowData {
-  final String address;
-  final String detail;
-  final String badgeLabel;
-  final Color badgeColor;
-  final Color badgeTextColor;
+class _BadgeData {
+  final String label;
+  final Color bg;
+  final Color fg;
 
-  const _PickupRowData({
-    required this.address,
-    required this.detail,
-    required this.badgeLabel,
-    required this.badgeColor,
-    required this.badgeTextColor,
+  const _BadgeData({
+    required this.label,
+    required this.bg,
+    required this.fg,
   });
 }

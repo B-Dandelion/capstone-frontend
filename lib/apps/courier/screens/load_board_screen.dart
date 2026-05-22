@@ -34,8 +34,28 @@ class LoadBoardScreen extends StatelessWidget {
                 Text('$robotId 적재 보드', style: AppTextStyles.sectionTitle),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  '현재 적재 $totalCount건 · 배송 완료 시 카드가 제거됩니다.',
+                  '현재 적재 $totalCount건 · 완료 처리 시 카드가 제거됩니다.',
                   style: AppTextStyles.sub,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(AppRadius.xl),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.info_outline, color: AppColors.primary),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Text(
+                          '각 구역별 적재 카드가 실시간으로 표시됩니다. 완료 처리 시 해당 카드가 보드에서 사라집니다.',
+                          style: AppTextStyles.body,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 Expanded(
@@ -49,7 +69,7 @@ class LoadBoardScreen extends StatelessWidget {
                           child: _LoadColumn(
                             title: entry.key,
                             items: entry.value,
-                            onRemove: (item) {
+                            onComplete: (item) {
                               RobotLoadStore.instance.removeItem(
                                 robotId: robotId,
                                 itemId: item.id,
@@ -73,18 +93,18 @@ class LoadBoardScreen extends StatelessWidget {
 class _LoadColumn extends StatelessWidget {
   final String title;
   final List<LoadBoardItem> items;
-  final void Function(LoadBoardItem item) onRemove;
+  final void Function(LoadBoardItem item) onComplete;
 
   const _LoadColumn({
     required this.title,
     required this.items,
-    required this.onRemove,
+    required this.onComplete,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 170,
+      width: 190,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -92,19 +112,42 @@ class _LoadColumn extends StatelessWidget {
         border: Border.all(color: AppColors.stroke),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: AppTextStyles.body),
+          Row(
+            children: [
+              Expanded(
+                child: Text(title, style: AppTextStyles.body),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceMuted,
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                ),
+                child: Text(
+                  '${items.length}',
+                  style: AppTextStyles.sub.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: AppSpacing.md),
           if (items.isEmpty)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 18),
+              padding: const EdgeInsets.symmetric(vertical: 24),
               decoration: BoxDecoration(
                 color: AppColors.surfaceMuted,
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: const Center(
-                child: Text('비어 있음', style: AppTextStyles.sub),
+                child: Text(
+                  '비어 있음',
+                  style: AppTextStyles.sub,
+                ),
               ),
             )
           else
@@ -127,25 +170,18 @@ class _LoadColumn extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            item.zone,
-                            style: AppTextStyles.sub,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () => onRemove(item),
-                          icon: const Icon(
-                            Icons.remove_circle_outline,
-                            color: AppColors.error,
-                          ),
-                          iconSize: 20,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                      ],
+                    Text(
+                      '${item.zone} · ${_timeLabel(item.createdAt)} 적재',
+                      style: AppTextStyles.sub,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 40,
+                      child: OutlinedButton(
+                        onPressed: () => onComplete(item),
+                        child: const Text('완료 처리'),
+                      ),
                     ),
                   ],
                 ),
@@ -154,5 +190,11 @@ class _LoadColumn extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  static String _timeLabel(DateTime dt) {
+    final hh = dt.hour.toString().padLeft(2, '0');
+    final mm = dt.minute.toString().padLeft(2, '0');
+    return '$hh:$mm';
   }
 }

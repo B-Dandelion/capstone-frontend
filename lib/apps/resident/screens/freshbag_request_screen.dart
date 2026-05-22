@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:capstone_frontend/core/services/freshbag_request_store.dart';
 import 'package:capstone_frontend/core/theme/app_colors.dart';
 import 'package:capstone_frontend/core/theme/app_radius.dart';
 import 'package:capstone_frontend/core/theme/app_spacing.dart';
@@ -17,7 +18,15 @@ class _FreshbagRequestScreenState extends State<FreshbagRequestScreen> {
   bool requested = false;
   bool failed = false;
 
+  final String building = '101';
+  final String unit = '1203';
+
   void _requestPickup() {
+    FreshbagRequestStore.instance.addRequest(
+      building: building,
+      unit: unit,
+    );
+
     setState(() {
       requested = true;
       failed = false;
@@ -71,20 +80,17 @@ class _FreshbagRequestScreenState extends State<FreshbagRequestScreen> {
             style: AppTextStyles.sub,
           ),
           const SizedBox(height: AppSpacing.xl),
-
-          const InfoCard(
+          InfoCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('수거 위치', style: AppTextStyles.sub),
-                SizedBox(height: AppSpacing.sm),
-                Text('101동 1203호', style: AppTextStyles.body),
+                const Text('수거 위치', style: AppTextStyles.sub),
+                const SizedBox(height: AppSpacing.sm),
+                Text('${building}동 ${unit}호', style: AppTextStyles.body),
               ],
             ),
           ),
-
           const SizedBox(height: AppSpacing.lg),
-
           InfoCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,9 +132,7 @@ class _FreshbagRequestScreenState extends State<FreshbagRequestScreen> {
               ],
             ),
           ),
-
           const SizedBox(height: AppSpacing.xl),
-
           PrimaryCtaButton(
             label: '수거 요청하기',
             icon: Icons.shopping_bag_outlined,
