@@ -42,7 +42,7 @@ class _PreLaunchCheckScreenState extends State<PreLaunchCheckScreen> {
               const Text('목적지와 적재 상태를 점검하세요', style: AppTextStyles.sectionTitle),
               const SizedBox(height: AppSpacing.sm),
               const Text(
-                '배송 시작 전 마지막 확인 단계입니다. 잘못된 출발은 기사 업무를 크게 늘립니다.',
+                '자동 배송 시작 전 마지막 점검 단계입니다. 장비와 작업 정보가 정확한지 확인합니다.',
                 style: AppTextStyles.sub,
               ),
               const SizedBox(height: AppSpacing.xl),
@@ -82,14 +82,14 @@ class _PreLaunchCheckScreenState extends State<PreLaunchCheckScreen> {
               ),
               const SizedBox(height: AppSpacing.xl),
               _CheckCard(
-                title: '적재함이 완전히 닫혔나요?',
+                title: '적재 상태가 정상인가요?',
                 subtitle: '운행 중 적재함이 열리면 배송이 중단됩니다.',
                 checked: hatchClosed,
                 onTap: () => setState(() => hatchClosed = !hatchClosed),
               ),
               const SizedBox(height: AppSpacing.md),
               _CheckCard(
-                title: '목적지 정보가 정확한가요?',
+                title: '등록된 배송 대상이 맞나요?',
                 subtitle: '${widget.building} ${widget.unit}호로 배송됩니다.',
                 checked: addressChecked,
                 onTap: () => setState(() => addressChecked = !addressChecked),
@@ -109,7 +109,7 @@ class _PreLaunchCheckScreenState extends State<PreLaunchCheckScreen> {
                     SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
-                        '배송 시작 후에는 목적지 변경이 제한됩니다.',
+                        '작업 시작 후 배송 대상 변경이 제한됩니다.',
                         style: AppTextStyles.body,
                       ),
                     ),

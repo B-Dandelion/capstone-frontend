@@ -5,8 +5,6 @@ import 'package:capstone_frontend/core/theme/app_text_styles.dart';
 import 'package:capstone_frontend/core/widgets/hero_status_card.dart';
 import 'package:capstone_frontend/core/widgets/info_card.dart';
 import 'package:capstone_frontend/core/widgets/status_chip.dart';
-import 'package:capstone_frontend/core/models/security_alert.dart';
-import 'package:capstone_frontend/core/widgets/security_status_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -35,7 +33,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Text('101동 1203호', style: AppTextStyles.sectionTitle),
                     SizedBox(height: 4),
-                    Text('오늘 배송 상태를 확인하세요', style: AppTextStyles.sub),
+                    Text('오늘 새벽배송 상태를 확인하세요', style: AppTextStyles.sub),
                   ],
                 ),
                 const Spacer(),
@@ -47,13 +45,13 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.xl),
             HeroStatusCard(
-              title: '오늘 도착 예정 택배 1건',
-              status: '로봇이 이동 중입니다',
+              title: '오늘 도착 예정 배송 1건',
+              status: '로봇이 자동 배송 중입니다',
               eta: '예상 도착 1분 18초',
               onTap: () => Navigator.of(context).pushNamed('/tracking'),
             ),
             const SizedBox(height: AppSpacing.xl),
-            const InfoCard(
+            InfoCard(
               child: Row(
                 children: const [
                   Expanded(
@@ -65,16 +63,6 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            SecurityStatusCard(
-              level: SecurityAlertLevel.warning,
-              title: '보안 경고 발생',
-              subtitle: '강제 개방 시도가 감지되었습니다. 보안 이벤트 상세를 확인해주세요.',
-              buttonLabel: '자세히 보기',
-              onTap: () {
-                Navigator.of(context).pushNamed('/security-alert');
-              },
             ),
             const SizedBox(height: AppSpacing.lg),
             const InfoCard(

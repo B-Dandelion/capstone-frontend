@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:capstone_frontend/apps/courier/screens/create_delivery_screen.dart';
 import 'package:capstone_frontend/apps/courier/screens/robot_connect_screen.dart';
+import 'package:capstone_frontend/apps/courier/screens/scout_wifi_test_screen.dart';
 import 'package:capstone_frontend/core/models/delivery_status.dart';
 import 'package:capstone_frontend/core/theme/app_colors.dart';
 import 'package:capstone_frontend/core/theme/app_radius.dart';
@@ -57,14 +58,14 @@ class CourierDashboardScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xl),
                     Text(
-                      '좋은 오후입니다',
+                      '새벽배송 운영 현황',
                       style: AppTextStyles.headline.copyWith(
                         color: AppColors.textOnDark,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
-                      '오늘 처리 12건 · 오류 1건',
+                      '오늘 작업 12건 · 운영 장비 2대',
                       style: AppTextStyles.body.copyWith(
                         color: AppColors.textOnDark.withOpacity(0.9),
                       ),
@@ -84,7 +85,7 @@ class CourierDashboardScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: const [
-                          Text('연결된 로봇', style: AppTextStyles.sub),
+                          Text('운영 중 장비', style: AppTextStyles.sub),
                           Spacer(),
                           StatusChip(
                             status: DeliveryStatus.arrived,
@@ -110,12 +111,12 @@ class CourierDashboardScreen extends StatelessWidget {
                                 ),
                               );
                             },
-                            child: const Text('연결 변경'),
+                            child: const Text('장비 변경'),
                           ),
                           const SizedBox(width: AppSpacing.md),
                           Expanded(
                             child: PrimaryCtaButton(
-                              label: '새 배송 시작',
+                              label: '새 배송 작업 등록',
                               icon: Icons.arrow_forward,
                               onPressed: () {
                                 Navigator.of(context).push(
@@ -132,7 +133,52 @@ class CourierDashboardScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
-                const Text('오늘 작업', style: AppTextStyles.sectionTitle),
+                InfoCard(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceMuted,
+                          borderRadius: BorderRadius.circular(AppRadius.md),
+                        ),
+                        child: const Icon(
+                          Icons.wifi,
+                          color: AppColors.deepGreen,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.lg),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Scout Mini 통신 테스트', style: AppTextStyles.body),
+                            SizedBox(height: 4),
+                            Text(
+                              '운영 앱과 장비 간 명령 송수신을 확인합니다.',
+                              style: AppTextStyles.sub,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ScoutWifiTestScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text('열기'),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                const Text('운영 요약', style: AppTextStyles.sectionTitle),
                 const SizedBox(height: AppSpacing.lg),
                 GridView.count(
                   crossAxisCount: 2,
@@ -142,10 +188,10 @@ class CourierDashboardScreen extends StatelessWidget {
                   crossAxisSpacing: AppSpacing.lg,
                   childAspectRatio: 1.35,
                   children: const [
-                    StatMiniCard(label: '완료', value: '12'),
-                    StatMiniCard(label: '진행 중', value: '2'),
-                    StatMiniCard(label: '실패', value: '1'),
-                    StatMiniCard(label: '평균 시간', value: '2m 18s'),
+                    StatMiniCard(label: '등록 작업', value: '12'),
+                    StatMiniCard(label: '진행 중 배송', value: '2'),
+                    StatMiniCard(label: '완료 배송', value: '10'),
+                    StatMiniCard(label: '평균 처리 시간', value: '2m 18s'),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.xxl),

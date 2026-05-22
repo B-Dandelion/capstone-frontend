@@ -32,7 +32,7 @@ class ArrivedScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xl),
               const Text(
-                '택배가 문 앞에 도착했습니다',
+                '새벽배송 물품이 문 앞에 도착했습니다',
                 style: AppTextStyles.sectionTitle,
                 textAlign: TextAlign.center,
               ),

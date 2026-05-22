@@ -6,8 +6,6 @@ import 'package:capstone_frontend/core/theme/app_text_styles.dart';
 import 'package:capstone_frontend/core/widgets/info_card.dart';
 import 'package:capstone_frontend/core/widgets/progress_timeline.dart';
 import 'package:capstone_frontend/core/widgets/status_chip.dart';
-import 'package:capstone_frontend/core/models/security_alert.dart';
-import 'package:capstone_frontend/core/widgets/security_status_card.dart';
 
 class TrackingScreen extends StatelessWidget {
   const TrackingScreen({super.key});
@@ -57,9 +55,9 @@ class TrackingScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.xxl),
         children: [
-          const Text('현재 문 앞 배송이 진행 중입니다', style: AppTextStyles.body),
+          const Text('현재 새벽배송이 진행 중입니다', style: AppTextStyles.body),
           const SizedBox(height: AppSpacing.xl),
-          const InfoCard(
+          InfoCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
@@ -91,19 +89,9 @@ class TrackingScreen extends StatelessWidget {
           const InfoCard(
             backgroundColor: AppColors.mintSoft,
             child: Text(
-              '로봇이 문 앞에 도착하면 바로 알려드릴게요.',
+              '배송이 완료되면 바로 알려드릴게요.',
               style: AppTextStyles.body,
             ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          SecurityStatusCard(
-            level: SecurityAlertLevel.warning,
-            title: '배송 중 보안 경고',
-            subtitle: '적재함 강제 개방 시도가 감지되었습니다.',
-            buttonLabel: '보안 경고 확인',
-            onTap: () {
-              Navigator.of(context).pushNamed('/security-alert');
-            },
           ),
           const SizedBox(height: AppSpacing.xl),
           FilledButton(

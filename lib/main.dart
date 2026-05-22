@@ -42,13 +42,13 @@ class _LauncherScreen extends StatelessWidget {
               const Text('Porter', style: AppTextStyles.headline),
               const SizedBox(height: AppSpacing.sm),
               const Text(
-                '개발용 실행 화면\n기사 앱 / 주민 앱을 바로 띄울 수 있습니다.',
+                '새벽배송 자동화 서비스 테스트\n운영 앱과 고객 확인 앱을 실행할 수 있습니다.',
                 style: AppTextStyles.body,
               ),
               const SizedBox(height: AppSpacing.xxxl),
               _LauncherCard(
-                title: 'Courier App',
-                subtitle: '기사용 앱',
+                title: '새벽배송 운영 앱',
+                subtitle: '로비 적재 후 자동 배송 작업을 시작하고 상태를 확인합니다.',
                 color: AppColors.deepGreen,
                 onTap: () {
                   Navigator.of(context).push(
@@ -58,8 +58,8 @@ class _LauncherScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.lg),
               _LauncherCard(
-                title: 'Home App',
-                subtitle: '주민용 앱',
+                title: '고객 확인 앱',
+                subtitle: '배송 진행과 문 앞 도착 알림을 확인합니다.',
                 color: AppColors.deepGreenDark,
                 onTap: () {
                   Navigator.of(context).push(

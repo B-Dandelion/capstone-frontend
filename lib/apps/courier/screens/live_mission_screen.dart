@@ -134,29 +134,13 @@ class LiveMissionScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      Text('실시간 메시지', style: AppTextStyles.sectionTitle),
+                      Text('실시간 운영 로그', style: AppTextStyles.sectionTitle),
                       SizedBox(height: AppSpacing.lg),
                       Text('복도 진입', style: AppTextStyles.body),
                       SizedBox(height: 6),
                       Text('통신 양호', style: AppTextStyles.body),
                       SizedBox(height: 6),
                       Text('문 앞 도착 예상 00:42', style: AppTextStyles.body),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                const InfoCard(
-                  backgroundColor: Color(0xFFFFF1F1),
-                  child: Row(
-                    children: [
-                      Icon(Icons.warning_amber_rounded, color: AppColors.error),
-                      SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Text(
-                          '보안 상태: 강제 개방 시도 감지',
-                          style: AppTextStyles.body,
-                        ),
-                      ),
                     ],
                   ),
                 ),

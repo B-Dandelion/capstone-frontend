@@ -58,7 +58,7 @@ class _RobotConnectScreenState extends State<RobotConnectScreen> {
               const Text('사용 가능한 로봇을 선택하세요', style: AppTextStyles.sectionTitle),
               const SizedBox(height: AppSpacing.sm),
               const Text(
-                '배송 등록 전에 연결 로봇을 확인하면 이후 단계가 훨씬 빨라집니다.',
+                '작업 시작 전에 장비를 확인하면 운영 흐름을 빠르게 진행할 수 있습니다.',
                 style: AppTextStyles.sub,
               ),
               const SizedBox(height: AppSpacing.xl),
