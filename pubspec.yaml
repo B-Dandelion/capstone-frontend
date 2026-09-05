@@ -1,5 +1,5 @@
 name: capstone_frontend
-description: "A new Flutter project."
+description: "Flutter app for an autonomous apartment last-mile delivery capstone project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
-# of the product and file versions while build-number is used as the build suffix.
+# of the product file and product versions, while build-number is used as the build suffix.
 version: 1.0.0+1
 
 environment:
@@ -30,11 +30,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  permission_handler: ^12.0.1
+  http: ^1.2.2
+  camera: ^0.11.2+1
+  google_mlkit_text_recognition: ^0.15.1
 
 dev_dependencies:
   flutter_test:
@@ -46,9 +48,11 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.6
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+# For information on the generic Dart part, see the following page:
+# https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -57,6 +61,10 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/10.png
+    - assets/check.png
+    - assets/branding/aps_icon.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -66,14 +74,13 @@ flutter:
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
+  # For details regarding adding assets from package dependencies,
+  # see https://flutter.dev/to/asset-from-package
 
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
+  # To add custom fonts to your application, add a fonts section here, in this
+  # "flutter" section. Each entry in this list should have a "family" key with
+  # the font family name, and a "fonts" key with a list giving the asset and
+  # other descriptors for the font. For example:
   # fonts:
   #   - family: Schyler
   #     fonts:
@@ -88,3 +95,19 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/branding/aps_icon.png"
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/branding/aps_splash.png
+  android: true
+  ios: true
+  web: false
+
+  android_12:
+    color: "#FFFFFF"
+    image: assets/branding/aps_splash.png
