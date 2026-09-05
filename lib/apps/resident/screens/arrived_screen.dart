@@ -9,8 +9,8 @@ import 'package:capstone_frontend/core/theme/app_text_styles.dart';
 class ArrivedScreen extends StatelessWidget {
   const ArrivedScreen({super.key});
 
-  static const building = '101';
-  static const unit = '1203';
+  static const building = '108';
+  static const unit = '1403';
 
   @override
   Widget build(BuildContext context) {
@@ -48,15 +48,15 @@ class ArrivedScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: AppSpacing.xl),
                       const Text(
-                        '택배가 문 앞에 도착했습니다',
+                        '배송이 완료되었습니다',
                         style: AppTextStyles.sectionTitle,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: AppSpacing.md),
                       Text(
                         mission == null
-                            ? '방금 안전하게 배송되었어요'
-                            : '${mission.startedAt.hour.toString().padLeft(2, '0')}:${mission.startedAt.minute.toString().padLeft(2, '0')}에 안전하게 배송되었어요',
+                            ? '문 앞 배송 완료 사진을 확인해주세요.'
+                            : '${mission.startedAt.hour.toString().padLeft(2, '0')}:${mission.startedAt.minute.toString().padLeft(2, '0')}에 배송이 완료되었어요.',
                         style: AppTextStyles.body,
                         textAlign: TextAlign.center,
                       ),
@@ -76,6 +76,38 @@ class ArrivedScreen extends StatelessWidget {
                             _InfoRow(label: '위치', value: '${building}동 ${unit}호'),
                             const SizedBox(height: AppSpacing.lg),
                             const _InfoRow(label: '상태', value: '배송 완료'),
+                            const SizedBox(height: AppSpacing.xl),
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(AppSpacing.xl),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(AppRadius.xl),
+                                border: Border.all(color: AppColors.stroke),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    '배송 완료 사진',
+                                    style: AppTextStyles.sectionTitle,
+                                  ),
+                                  const SizedBox(height: AppSpacing.md),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(AppRadius.lg),
+                                    child: Image.asset(
+                                      'assets/10.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  const SizedBox(height: AppSpacing.md),
+                                  const Text(
+                                    '문 앞에 배송이 완료된 상태입니다.',
+                                    style: AppTextStyles.sub,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),

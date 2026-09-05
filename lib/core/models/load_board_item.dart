@@ -22,5 +22,8 @@ class LoadBoardItem {
     required this.status,
   });
 
-  String get addressLabel => '$building동 $unit호';
+  String get addressLabel {
+    if (building.trim().isEmpty) return '${unit}호';
+    return '${building}동 ${unit}호';
+  }
 }

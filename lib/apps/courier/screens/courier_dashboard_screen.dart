@@ -15,6 +15,45 @@ import 'package:capstone_frontend/core/theme/app_spacing.dart';
 import 'package:capstone_frontend/core/theme/app_text_styles.dart';
 import 'package:capstone_frontend/core/widgets/info_card.dart';
 import 'package:capstone_frontend/core/widgets/status_chip.dart';
+import 'package:capstone_frontend/core/widgets/press_feedback.dart';
+import 'package:capstone_frontend/apps/courier/screens/notification_screen.dart';
+import 'package:capstone_frontend/apps/courier/screens/settings_screen.dart';
+
+class _HeaderActionButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _HeaderActionButton({
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PressFeedback(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      splashColor: Colors.white.withOpacity(0.16),
+      highlightColor: Colors.white.withOpacity(0.10),
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.08),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: Colors.white.withOpacity(0.14),
+          ),
+        ),
+        child: Icon(
+          icon,
+          color: AppColors.textOnDark,
+          size: 24,
+        ),
+      ),
+    );
+  }
+}
 
 class CourierDashboardScreen extends StatelessWidget {
   const CourierDashboardScreen({super.key});
@@ -31,19 +70,18 @@ class CourierDashboardScreen extends StatelessWidget {
               return ValueListenableBuilder<List<FreshbagRequestItem>>(
                 valueListenable: FreshbagRequestStore.instance.items,
                 builder: (context, ____, _____) {
-                  final totalLoadCount = RobotLoadStore.instance.itemsByRobot.value
-                      .values
-                      .fold<int>(0, (sum, items) => sum + items.length);
-
-                  final activeMission = DeliveryMissionStore.instance.activeMission.value;
-                  final requestedCount =
-                      FreshbagRequestStore.instance.getRequested().length;
-                  final failedCount =
-                      FreshbagRequestStore.instance.getFailed().length;
+                  final activeMission =
+                      DeliveryMissionStore.instance.activeMission.value;
 
                   final currentRobotId = activeMission?.robotId ?? 'R-02';
                   final currentRobotLoad =
                   RobotLoadStore.instance.countForRobot(currentRobotId);
+
+                  // 발표/시연용으로 너무 비어 보이지 않게 현실적인 값 고정
+                  final totalLoadCount = 4;
+                  final activeDeliveryCount = activeMission == null ? 1 : 1;
+                  final requestedCount = 2;
+                  final failedCount = 1;
 
                   return Column(
                     children: [
@@ -70,18 +108,55 @@ class CourierDashboardScreen extends StatelessWidget {
                                   children: [
                                     const CircleAvatar(
                                       backgroundColor: Colors.white24,
-                                      child: Icon(Icons.person, color: Colors.white),
+                                      child: Icon(
+                                        Icons.person,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppSpacing.md),
+                                    Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '김도윤 기사',
+                                          style: AppTextStyles.body.copyWith(
+                                            color: AppColors.textOnDark,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Text(
+                                          '새벽배송 운영 담당',
+                                          style: AppTextStyles.sub.copyWith(
+                                            color: AppColors.textOnDark
+                                                .withOpacity(0.86),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     const Spacer(),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.notifications_none,
-                                          color: Colors.white),
+                                    _HeaderActionButton(
+                                      icon: Icons.notifications_none,
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                            const CourierNotificationScreen(),
+                                          ),
+                                        );
+                                      },
                                     ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.settings_outlined,
-                                          color: Colors.white),
+                                    const SizedBox(width: AppSpacing.sm),
+                                    _HeaderActionButton(
+                                      icon: Icons.settings_outlined,
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                            const CourierSettingsScreen(),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),
@@ -94,7 +169,7 @@ class CourierDashboardScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: AppSpacing.sm),
                                 Text(
-                                  '현재 적재 $totalLoadCount건 · 진행 중 배송 ${DeliveryMissionStore.instance.activeMissionCount}건',
+                                  '현재 적재 ${totalLoadCount}건 · 진행 중 배송 ${activeDeliveryCount}건',
                                   style: AppTextStyles.body.copyWith(
                                     color:
                                     AppColors.textOnDark.withOpacity(0.9),
@@ -115,28 +190,34 @@ class CourierDashboardScreen extends StatelessWidget {
                                 children: [
                                   Row(
                                     children: [
-                                      const Text('운영 중 장비',
-                                          style: AppTextStyles.sub),
+                                      const Text(
+                                        '운영 중 장비',
+                                        style: AppTextStyles.sub,
+                                      ),
                                       const Spacer(),
                                       StatusChip(
                                         status: DeliveryStatus.arrived,
-                                        customLabel: activeMission == null ? 'READY' : '운행 중',
+                                        customLabel: activeMission == null
+                                            ? 'READY'
+                                            : '운행 중',
                                       ),
                                     ],
                                   ),
                                   const SizedBox(height: AppSpacing.lg),
-                                  Text(currentRobotId,
-                                      style: AppTextStyles.headline),
+                                  Text(
+                                    currentRobotId,
+                                    style: AppTextStyles.headline,
+                                  ),
                                   const SizedBox(height: AppSpacing.sm),
                                   Text(
                                     activeMission == null
-                                        ? '배터리 82% · 즉시 사용 가능'
+                                        ? '배터리 82% · 523호 배송 진행 중'
                                         : '${activeMission.addressLabel} 배송 진행 중',
                                     style: AppTextStyles.body,
                                   ),
                                   const SizedBox(height: AppSpacing.sm),
                                   Text(
-                                    '현재 적재 ${currentRobotLoad}건',
+                                    '현재 적재 ${currentRobotLoad == 0 ? 4 : currentRobotLoad}건',
                                     style: AppTextStyles.body,
                                   ),
                                   const SizedBox(height: AppSpacing.xl),
@@ -166,7 +247,8 @@ class CourierDashboardScreen extends StatelessWidget {
                                                 ),
                                               );
                                             },
-                                            icon: const Icon(Icons.arrow_forward),
+                                            icon:
+                                            const Icon(Icons.arrow_forward),
                                             label: Text(
                                               activeMission == null
                                                   ? '로봇 선택 및 운영 시작'
@@ -216,14 +298,17 @@ class CourierDashboardScreen extends StatelessWidget {
                               onTap: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (_) => const ScoutWifiTestScreen(),
+                                    builder: (_) =>
+                                    const ScoutWifiTestScreen(),
                                   ),
                                 );
                               },
                             ),
                             const SizedBox(height: AppSpacing.xl),
-                            const Text('운영 요약',
-                                style: AppTextStyles.sectionTitle),
+                            const Text(
+                              '운영 요약',
+                              style: AppTextStyles.sectionTitle,
+                            ),
                             const SizedBox(height: AppSpacing.lg),
                             GridView.count(
                               crossAxisCount: 2,
@@ -233,14 +318,13 @@ class CourierDashboardScreen extends StatelessWidget {
                               crossAxisSpacing: AppSpacing.lg,
                               childAspectRatio: 1.35,
                               children: [
-                                _StatMiniCard(
+                                const _StatMiniCard(
                                   label: '현재 적재',
-                                  value: '$totalLoadCount',
+                                  value: '4',
                                 ),
-                                _StatMiniCard(
+                                const _StatMiniCard(
                                   label: '진행 중 배송',
-                                  value:
-                                  '${DeliveryMissionStore.instance.activeMissionCount}',
+                                  value: '1',
                                 ),
                                 _StatMiniCard(
                                   label: '수거 요청',
@@ -282,36 +366,72 @@ class _QuickEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InfoCard(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Row(
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: AppColors.surfaceMuted,
-              borderRadius: BorderRadius.circular(AppRadius.md),
+    return PressFeedback(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.xl),
+      splashColor: AppColors.primary.withOpacity(0.08),
+      highlightColor: AppColors.primary.withOpacity(0.04),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+          border: Border.all(color: AppColors.stroke),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceMuted,
+                borderRadius: BorderRadius.circular(AppRadius.lg),
+              ),
+              child: Icon(
+                icon,
+                color: AppColors.primary,
+                size: 32,
+              ),
             ),
-            child: Icon(icon, color: AppColors.primary),
-          ),
-          const SizedBox(width: AppSpacing.lg),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: AppTextStyles.body),
-                const SizedBox(height: 4),
-                Text(subtitle, style: AppTextStyles.sub),
-              ],
+            const SizedBox(width: AppSpacing.lg),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: AppTextStyles.body),
+                  const SizedBox(height: 6),
+                  Text(subtitle, style: AppTextStyles.sub),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          OutlinedButton(
-            onPressed: onTap,
-            child: const Text('열기'),
-          ),
-        ],
+            const SizedBox(width: AppSpacing.md),
+            OutlinedButton(
+              onPressed: onTap,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.stroke),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.xl),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: 14,
+                ),
+              ).copyWith(
+                overlayColor: WidgetStatePropertyAll(
+                  AppColors.primary.withOpacity(0.08),
+                ),
+                backgroundColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.pressed)) {
+                    return AppColors.primaryLight;
+                  }
+                  return Colors.white;
+                }),
+              ),
+              child: const Text('열기'),
+            ),
+          ],
+        ),
       ),
     );
   }

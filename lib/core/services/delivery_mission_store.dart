@@ -26,7 +26,7 @@ class DeliveryMissionStore {
       quantity: quantity,
       startedAt: DateTime.now(),
       status: DeliveryMissionStatus.moving,
-      currentStep: 3,
+      currentStep: 2,
       etaSeconds: 78,
     );
   }
@@ -35,7 +35,7 @@ class DeliveryMissionStore {
     final current = activeMission.value;
     if (current == null) return;
 
-    if (current.currentStep >= 4) return;
+    if (current.currentStep >= 3) return;
 
     final nextStep = current.currentStep + 1;
     final nextEta = (current.etaSeconds - 20).clamp(0, 99999);
@@ -43,7 +43,7 @@ class DeliveryMissionStore {
     activeMission.value = current.copyWith(
       currentStep: nextStep,
       etaSeconds: nextEta,
-      status: nextStep >= 4
+      status: nextStep >= 3
           ? DeliveryMissionStatus.arrived
           : DeliveryMissionStatus.moving,
     );
@@ -55,7 +55,7 @@ class DeliveryMissionStore {
 
     activeMission.value = current.copyWith(
       status: DeliveryMissionStatus.arrived,
-      currentStep: 4,
+      currentStep: 3,
       etaSeconds: 0,
     );
   }
@@ -66,7 +66,7 @@ class DeliveryMissionStore {
 
     final completed = current.copyWith(
       status: DeliveryMissionStatus.completed,
-      currentStep: 5,
+      currentStep: 4,
       etaSeconds: 0,
     );
 

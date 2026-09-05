@@ -129,7 +129,10 @@ class _CameraScanScreenState extends State<CameraScanScreen>
 
       final file = await controller.takePicture();
       final rawText = await _ocrService.recognizeText(file.path);
-      final parsed = AddressParser.parse(rawText);
+      final parsed = AddressParser.parse(
+        rawText,
+        defaultBuilding: null,
+      );
 
       if (!mounted) return;
 
@@ -153,7 +156,7 @@ class _CameraScanScreenState extends State<CameraScanScreen>
 
     RobotLoadStore.instance.addScannedAddress(
       robotId: widget.robotId,
-      building: parsed.building,
+      building: parsed.building ?? '',
       unit: parsed.unit,
     );
 

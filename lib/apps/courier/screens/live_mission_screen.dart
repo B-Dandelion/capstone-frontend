@@ -7,8 +7,93 @@ import 'package:capstone_frontend/core/theme/app_radius.dart';
 import 'package:capstone_frontend/core/theme/app_spacing.dart';
 import 'package:capstone_frontend/core/theme/app_text_styles.dart';
 
-class LiveMissionScreen extends StatelessWidget {
+class LiveMissionScreen extends StatefulWidget {
   const LiveMissionScreen({super.key});
+
+  @override
+  State<LiveMissionScreen> createState() => _LiveMissionScreenState();
+}
+
+class _LiveMissionScreenState extends State<LiveMissionScreen> {
+  int _demoStep = 0;
+
+  static const List<String> _steps = [
+    '접수됨',
+    '로봇 적재 완료',
+    '이동',
+    '배송 층 도착',
+    '배송 완료',
+    '프레시백 회수',
+    '복귀',
+  ];
+
+  String _formatAddress(String building, String unit) {
+    if (building.trim().isEmpty) return '${unit}호';
+    return '${building}동 ${unit}호';
+  }
+
+  void _advanceStep() {
+    setState(() {
+      if (_demoStep >= _steps.length - 1) {
+        _demoStep = 0;
+      } else {
+        _demoStep++;
+      }
+    });
+  }
+
+  _TimelineState _stepState(int index) {
+    if (index < _demoStep) return _TimelineState.done;
+    if (index == _demoStep) return _TimelineState.current;
+    return _TimelineState.future;
+  }
+
+  String _statusChipLabel() {
+    if (_demoStep >= 6) return '복귀 중';
+    if (_demoStep >= 5) return '회수 중';
+    if (_demoStep >= 4) return '배송 완료';
+    if (_demoStep >= 3) return '배송 층 도착';
+    return '이동 중';
+  }
+
+  String _statusDescription(DeliveryMissionItem mission) {
+    if (_demoStep >= 6) return '${mission.robotId} · 복귀 진행 중';
+    if (_demoStep >= 5) return '${mission.robotId} · 프레시백 회수 진행 중';
+    if (_demoStep >= 4) return '${mission.robotId} · 배송이 완료되었습니다';
+    if (_demoStep >= 3) return '${mission.robotId} · 배송 층 도착';
+    return '${mission.robotId} · 예상 도착 ${mission.etaLabel}';
+  }
+
+  String _logMessage(DeliveryMissionItem mission) {
+    if (_demoStep >= 6) return '복귀 중';
+    if (_demoStep >= 5) return '프레시백 회수 진행 중';
+    if (_demoStep >= 4) return '배송 완료';
+    if (_demoStep >= 3) return '배송 층 도착';
+    return '문 앞 도착 예상 ${mission.etaLabel}';
+  }
+
+  String _stepSubtitle(int index, DeliveryMissionItem mission) {
+    if (index == 2 && _demoStep == 2) {
+      return '목적지 방향으로 이동 중';
+    }
+    if (index == 3 && _demoStep >= 3) {
+      return '${_floorText(mission.unit)}층 도착';
+    }
+    if (index == 5 && _demoStep >= 5) {
+      return '프레시백 회수 진행 중';
+    }
+    if (index == 6 && _demoStep >= 6) {
+      return '기본 위치로 복귀 중';
+    }
+    return '';
+  }
+
+  String _floorText(String unit) {
+    if (unit.length >= 2) {
+      return unit.substring(0, 1);
+    }
+    return unit;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +108,9 @@ class LiveMissionScreen extends StatelessWidget {
             ),
           );
         }
+
+        final addressLabel = _formatAddress(mission.building, mission.unit);
+        final isFinalStep = _demoStep >= 6;
 
         return Scaffold(
           body: Column(
@@ -49,14 +137,14 @@ class LiveMissionScreen extends StatelessWidget {
                         const Text('현재 자동 배송', style: AppTextStyles.sub),
                         const SizedBox(height: AppSpacing.md),
                         Text(
-                          mission.addressLabel,
+                          addressLabel,
                           style: AppTextStyles.headline.copyWith(
                             color: AppColors.textOnDark,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.md),
                         Text(
-                          '${mission.robotId} · ${mission.status == DeliveryMissionStatus.arrived ? '문 앞 도착' : '예상 도착 ${mission.etaLabel}'}',
+                          _statusDescription(mission),
                           style: AppTextStyles.body.copyWith(
                             color: AppColors.textOnDark.withOpacity(0.9),
                           ),
@@ -72,9 +160,7 @@ class LiveMissionScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(AppRadius.lg),
                           ),
                           child: Text(
-                            mission.status == DeliveryMissionStatus.arrived
-                                ? '도착'
-                                : '이동 중',
+                            _statusChipLabel(),
                             style: AppTextStyles.body,
                           ),
                         ),
@@ -87,55 +173,35 @@ class LiveMissionScreen extends StatelessWidget {
                 child: ListView(
                   padding: const EdgeInsets.all(AppSpacing.xxl),
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.xl),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(AppRadius.xl),
-                        border: Border.all(color: AppColors.stroke),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('배송 진행 단계', style: AppTextStyles.sectionTitle),
-                          const SizedBox(height: AppSpacing.lg),
-                          _TimelineStep(
-                            title: '접수됨',
-                            subtitle: '',
-                            state: _stepState(0, mission),
-                            isLast: false,
-                          ),
-                          _TimelineStep(
-                            title: '로봇 적재 완료',
-                            subtitle: '',
-                            state: _stepState(1, mission),
-                            isLast: false,
-                          ),
-                          _TimelineStep(
-                            title: '건물 진입',
-                            subtitle: '',
-                            state: _stepState(2, mission),
-                            isLast: false,
-                          ),
-                          _TimelineStep(
-                            title: '층 이동 중',
-                            subtitle: '${_floorText(mission.unit)}층으로 이동 중',
-                            state: _stepState(3, mission),
-                            isLast: false,
-                          ),
-                          _TimelineStep(
-                            title: '문 앞 도착',
-                            subtitle: '',
-                            state: _stepState(4, mission),
-                            isLast: false,
-                          ),
-                          _TimelineStep(
-                            title: '배송 완료',
-                            subtitle: '',
-                            state: _stepState(5, mission),
-                            isLast: true,
-                          ),
-                        ],
+                    InkWell(
+                      onTap: _advanceStep,
+                      borderRadius: BorderRadius.circular(AppRadius.xl),
+                      child: Container(
+                        padding: const EdgeInsets.all(AppSpacing.xl),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(AppRadius.xl),
+                          border: Border.all(color: AppColors.stroke),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('배송 진행 단계', style: AppTextStyles.sectionTitle),
+                            const SizedBox(height: AppSpacing.sm),
+                            const Text(
+                              '카드를 탭하면 다음 단계로 진행됩니다.',
+                              style: AppTextStyles.sub,
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            for (int i = 0; i < _steps.length; i++)
+                              _TimelineStep(
+                                title: _steps[i],
+                                subtitle: _stepSubtitle(i, mission),
+                                state: _stepState(i),
+                                isLast: i == _steps.length - 1,
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xl),
@@ -153,81 +219,50 @@ class LiveMissionScreen extends StatelessWidget {
                           const SizedBox(height: AppSpacing.lg),
                           Text('로봇: ${mission.robotId}', style: AppTextStyles.body),
                           const SizedBox(height: 8),
-                          Text('목적지: ${mission.addressLabel}', style: AppTextStyles.body),
+                          Text('목적지: $addressLabel', style: AppTextStyles.body),
                           const SizedBox(height: 8),
                           Text('작업 수량: ${mission.quantity}개', style: AppTextStyles.body),
                           const SizedBox(height: 8),
-                          Text(
-                            mission.status == DeliveryMissionStatus.arrived
-                                ? '문 앞 도착 완료'
-                                : '문 앞 도착 예상 ${mission.etaLabel}',
-                            style: AppTextStyles.body,
-                          ),
+                          Text(_logMessage(mission), style: AppTextStyles.body),
                         ],
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xl),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: mission.status == DeliveryMissionStatus.arrived
-                                ? null
-                                : () {
-                              DeliveryMissionStore.instance.advanceStep();
-                            },
-                            child: const Text('단계 진행'),
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: FilledButton(
-                            onPressed: mission.status == DeliveryMissionStatus.arrived
-                                ? () {
-                              RobotLoadStore.instance.removeFirstMatching(
-                                robotId: mission.robotId,
-                                building: mission.building,
-                                unit: mission.unit,
-                              );
-                              DeliveryMissionStore.instance.completeActiveMission();
-
-                              showDialog<void>(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text('배송 완료'),
-                                    content: Text(
-                                      '${mission.addressLabel} 배송이 완료되었습니다.',
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('확인'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-                                : null,
-                            child: const Text('배송 완료'),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.md),
                     SizedBox(
                       height: 56,
-                      child: OutlinedButton(
-                        onPressed: mission.status == DeliveryMissionStatus.arrived
-                            ? null
-                            : () {
-                          DeliveryMissionStore.instance.markArrived();
-                        },
-                        child: const Text('문 앞 도착 처리'),
+                      child: FilledButton(
+                        onPressed: isFinalStep
+                            ? () {
+                          RobotLoadStore.instance.removeFirstMatching(
+                            robotId: mission.robotId,
+                            building: mission.building,
+                            unit: mission.unit,
+                          );
+                          DeliveryMissionStore.instance.completeActiveMission();
+
+                          showDialog<void>(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('배송 완료'),
+                                content: Text(
+                                  '$addressLabel 배송이 완료되었습니다.',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('확인'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                            : null,
+                        child: const Text('배송 완료'),
                       ),
                     ),
                   ],
@@ -238,22 +273,6 @@ class LiveMissionScreen extends StatelessWidget {
         );
       },
     );
-  }
-
-  _TimelineState _stepState(int index, DeliveryMissionItem mission) {
-    if (mission.status == DeliveryMissionStatus.completed) {
-      return _TimelineState.done;
-    }
-    if (index < mission.currentStep) return _TimelineState.done;
-    if (index == mission.currentStep) return _TimelineState.current;
-    return _TimelineState.future;
-  }
-
-  String _floorText(String unit) {
-    if (unit.length >= 2) {
-      return unit.substring(0, 2);
-    }
-    return unit.substring(0, 1);
   }
 }
 

@@ -13,8 +13,8 @@ class RobotLoadStore {
         id: 'r01-1',
         robotId: 'R-01',
         zone: '1구역',
-        building: '101',
-        unit: '1104',
+        building: '',
+        unit: '201',
         createdAt: DateTime.now(),
         status: LoadItemStatus.loaded,
       ),
@@ -22,8 +22,17 @@ class RobotLoadStore {
         id: 'r01-2',
         robotId: 'R-01',
         zone: '2구역',
-        building: '102',
-        unit: '804',
+        building: '',
+        unit: '203',
+        createdAt: DateTime.now(),
+        status: LoadItemStatus.loaded,
+      ),
+      LoadBoardItem(
+        id: 'r01-3',
+        robotId: 'R-01',
+        zone: '3구역',
+        building: '',
+        unit: '304',
         createdAt: DateTime.now(),
         status: LoadItemStatus.loaded,
       ),
@@ -32,9 +41,36 @@ class RobotLoadStore {
       LoadBoardItem(
         id: 'r02-1',
         robotId: 'R-02',
+        zone: '1구역',
+        building: '',
+        unit: '402',
+        createdAt: DateTime.now(),
+        status: LoadItemStatus.loaded,
+      ),
+      LoadBoardItem(
+        id: 'r02-2',
+        robotId: 'R-02',
+        zone: '2구역',
+        building: '',
+        unit: '404',
+        createdAt: DateTime.now(),
+        status: LoadItemStatus.loaded,
+      ),
+      LoadBoardItem(
+        id: 'r02-3',
+        robotId: 'R-02',
         zone: '3구역',
-        building: '101',
-        unit: '1203',
+        building: '',
+        unit: '521',
+        createdAt: DateTime.now(),
+        status: LoadItemStatus.loaded,
+      ),
+      LoadBoardItem(
+        id: 'r02-4',
+        robotId: 'R-02',
+        zone: '4구역',
+        building: '',
+        unit: '523',
         createdAt: DateTime.now(),
         status: LoadItemStatus.loaded,
       ),
@@ -125,11 +161,6 @@ class RobotLoadStore {
   }
 
   String _resolveZone(String unit) {
-    final text = unit.trim();
-    if (text.isEmpty) return '1구역';
-
-    final firstDigit = int.tryParse(text[0]) ?? 1;
-    final zone = ((firstDigit - 1) % 4) + 1;
-    return '$zone구역';
+    return '3구역';
   }
 }
