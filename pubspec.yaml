@@ -1,5 +1,5 @@
 name: capstone_frontend
-description: "A new Flutter project."
+description: "Flutter app for an autonomous apartment last-mile delivery capstone project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
-# of the product and file versions while build-number is used as the build suffix.
+# of the product file and product versions, while build-number is used as the build suffix.
 version: 1.0.0+1
 
 environment:
@@ -51,8 +51,8 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.3
   flutter_native_splash: ^2.4.6
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+# For information on the generic Dart part, see the following page:
+# https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -74,14 +74,13 @@ flutter:
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
+  # For details regarding adding assets from package dependencies,
+  # see https://flutter.dev/to/asset-from-package
 
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
+  # To add custom fonts to your application, add a fonts section here, in this
+  # "flutter" section. Each entry in this list should have a "family" key with
+  # the font family name, and a "fonts" key with a list giving the asset and
+  # other descriptors for the font. For example:
   # fonts:
   #   - family: Schyler
   #     fonts:
